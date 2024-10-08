@@ -1,3 +1,5 @@
+package ru.snowypython;
+
 import java.util.Objects;
 
 public class Coordinates {
