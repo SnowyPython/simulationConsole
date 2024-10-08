@@ -11,6 +11,18 @@ public class Coordinates {
         this.rank = rank;
     }
 
+    public File getFile() {
+        return file;
+    }
+
+    public Integer getFileInteger() {
+        return file.ordinal() + 1;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

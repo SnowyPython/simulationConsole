@@ -1,6 +1,7 @@
 package ru.snowypython.entity;
 
 import ru.snowypython.Coordinates;
+import ru.snowypython.Map;
 
 public abstract class Creature extends Entity {
     private int speed;
@@ -10,5 +11,5 @@ public abstract class Creature extends Entity {
         super(coordinates);
     }
 
-    public abstract void makeMove();
+    public abstract void makeMove(Map map, Coordinates coordinates);
 }
