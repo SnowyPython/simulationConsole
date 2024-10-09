@@ -12,6 +12,12 @@ public class Map {
         map.put(coordinates, entity);
     }
 
+    public void replaceEntity(Entity entity, Coordinates oldCoordinates, Coordinates newCoordinates) {
+        entity.coordinates = newCoordinates;
+        map.remove(oldCoordinates, entity);
+        map.put(newCoordinates, entity);
+    }
+
     public boolean isSquareEmpty(Coordinates coordinates) {
         return !map.containsKey(coordinates);
     }

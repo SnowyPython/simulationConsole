@@ -16,7 +16,7 @@ public class Coordinates {
     }
 
     public Integer getFileInteger() {
-        return file.ordinal() + 1;
+        return file.ordinal();
     }
 
     public Integer getRank() {
