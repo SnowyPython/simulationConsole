@@ -5,6 +5,9 @@ import ru.snowypython.File;
 import ru.snowypython.Map;
 import ru.snowypython.queue.SimpleQueue;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Herbivore extends Creature {
     public static final Character icon = 'H';
 
@@ -14,101 +17,42 @@ public class Herbivore extends Creature {
 
     @Override
     public void makeMove(Map map, Coordinates coordinates) {
-        File[] file = File.values();
-        SimpleQueue<Coordinates> queue = new SimpleQueue<>();
-        queue.add(coordinates);
+        final int MAX_RANG = 20;
 
+        int[] dFile = new int[]{-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] dRank = new int[]{-1, 0, 1, 1, 1, 0, -1, -1};
+        File[] file = File.values();
+
+        SimpleQueue<Coordinates> queue = new SimpleQueue<>();
+        Set<Coordinates> visited = new HashSet<>();
+
+        queue.add(coordinates);
+        visited.add(coordinates);
+
+        outerLoop:
         while (!queue.isEmpty()) {
             Coordinates center = queue.remove();
             Integer centerFileInteger = center.getFileInteger();
             Integer centerRank = center.getRank();
 
-            if (centerFileInteger - 1 >= 0 && centerRank - 1 >= 1 && centerFileInteger - 1 < file.length &&
-                    centerRank - 1 <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger - 1], centerRank - 1))) {
-                queue.add(new Coordinates(file[centerFileInteger - 1], centerRank - 1));
-            }
+            for (int i = 0; i < 8; i++) {
+                int newFile = centerFileInteger + dFile[i];
+                int newRank = centerRank + dRank[i];
 
-            if (centerFileInteger - 1 >= 0 && centerRank - 1 >= 1 && centerFileInteger - 1 < file.length &&
-                    centerRank - 1 <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger - 1], centerRank - 1))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger - 1], centerRank - 1));
-                break;
-            }
+                Coordinates newCoordinates = null;
+                if (newFile >= 0 && newRank >= 1 && newFile < file.length && newRank <= MAX_RANG) {
+                    newCoordinates = new Coordinates(file[newFile], newRank);
+                }
 
-            if (centerFileInteger - 1 >= 0 && centerRank >= 1 && centerFileInteger - 1 < file.length &&
-                    centerRank <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger - 1], centerRank))) {
-                queue.add(new Coordinates(file[centerFileInteger - 1], centerRank));
-            }
-
-            if (centerFileInteger - 1 >= 0 && centerRank >= 1 && centerFileInteger - 1 < file.length &&
-                    centerRank <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger - 1], centerRank))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger - 1], centerRank));
-                break;
-            }
-
-            if (centerFileInteger - 1 >= 0 && centerRank + 1 >= 1 && centerFileInteger - 1 < file.length &&
-                    centerRank + 1 <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger - 1], centerRank + 1))) {
-                queue.add(new Coordinates(file[centerFileInteger - 1], centerRank + 1));
-            }
-
-            if (centerFileInteger - 1 >= 0 && centerRank + 1 >= 1 && centerFileInteger - 1 < file.length &&
-                    centerRank + 1 <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger - 1], centerRank + 1))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger - 1], centerRank + 1));
-                break;
-            }
-
-            if (centerFileInteger >= 0 && centerRank + 1 >= 1 && centerFileInteger < file.length &&
-                    centerRank + 1 <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger], centerRank + 1))) {
-                queue.add(new Coordinates(file[centerFileInteger], centerRank + 1));
-            }
-
-            if (centerFileInteger >= 0 && centerRank + 1 >= 1 && centerFileInteger < file.length &&
-                    centerRank + 1 <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger], centerRank + 1))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger], centerRank + 1));
-                break;
-            }
-
-            if (centerFileInteger + 1 >= 0 && centerRank + 1 >= 1 && centerFileInteger + 1 < file.length &&
-                    centerRank + 1 <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger + 1], centerRank + 1))) {
-                queue.add(new Coordinates(file[centerFileInteger + 1], centerRank + 1));
-            }
-
-            if (centerFileInteger + 1 >= 0 && centerRank + 1 >= 1 && centerFileInteger + 1 < file.length &&
-                    centerRank + 1 <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger + 1], centerRank + 1))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger + 1], centerRank + 1));
-                break;
-            }
-
-            if (centerFileInteger + 1 >= 0 && centerRank >= 1 && centerFileInteger + 1 < file.length &&
-                    centerRank <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger + 1], centerRank))) {
-                queue.add(new Coordinates(file[centerFileInteger + 1], centerRank));
-            }
-
-            if (centerFileInteger + 1 >= 0 && centerRank >= 1 && centerFileInteger + 1 < file.length &&
-                    centerRank <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger + 1], centerRank))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger + 1], centerRank));
-                break;
-            }
-
-            if (centerFileInteger + 1 >= 0 && centerRank - 1 >= 1 && centerFileInteger + 1 < file.length &&
-                    centerRank - 1 <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger + 1], centerRank - 1))) {
-                queue.add(new Coordinates(file[centerFileInteger + 1], centerRank - 1));
-            }
-
-            if (centerFileInteger + 1 >= 0 && centerRank - 1 >= 1 && centerFileInteger + 1 < file.length &&
-                    centerRank - 1 <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger + 1], centerRank - 1))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger + 1], centerRank - 1));
-                break;
-            }
-
-            if (centerFileInteger >= 0 && centerRank - 1 >= 1 && centerFileInteger < file.length &&
-                    centerRank - 1 <= 20 && map.isSquareEmpty(new Coordinates(file[centerFileInteger], centerRank - 1))) {
-                queue.add(new Coordinates(file[centerFileInteger], centerRank - 1));
-            }
-
-            if (centerFileInteger >= 0 && centerRank - 1 >= 1 && centerFileInteger < file.length &&
-                    centerRank - 1 <= 20 && map.isSquareGrass(new Coordinates(file[centerFileInteger], centerRank - 1))) {
-                map.replaceEntity(this, coordinates, new Coordinates(file[centerFileInteger], centerRank - 1));
-                break;
+                if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareEmpty(newCoordinates)) {
+                    queue.add(newCoordinates);
+                    visited.add(newCoordinates);
+                } else if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareGrass(newCoordinates)) {
+                    map.replaceEntity(this, coordinates, newCoordinates);
+                    break outerLoop;
+                } else if (newCoordinates != null && !visited.contains(newCoordinates)) {
+                    visited.add(newCoordinates);
+                }
             }
         }
     }
