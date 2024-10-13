@@ -15,7 +15,7 @@ public class Herbivore extends Creature {
     public static final String icon = ANSI_YELLOW + 'H' + ANSI_RESET;
     public static final int maxHp = 5;
 
-    private int speed = 5;
+    private final int speed = 3;
     private int hp;
 
     public Herbivore(Coordinates coordinates) {
@@ -70,8 +70,16 @@ public class Herbivore extends Creature {
                     queue.add(newCoordinates);
                     visited.add(newCoordinates);
                 } else if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareGrass(newCoordinates)) {
-                    this.setHp(getHp() + 1);
-                    map.replaceEntity(this, coordinates, newCoordinates);
+                    if (Math.abs(newCoordinates.getFileInteger() - coordinates.getFileInteger()) <= speed && Math.abs(newCoordinates.getRank() - coordinates.getRank()) <= speed) {
+                        this.setHp(getHp() + 1);
+                        map.replaceEntity(this, coordinates, newCoordinates);
+                    } else {
+                        File newRandomFile = file[coordinates.getFileInteger() + (int) (Math.random() * 3) - 1];
+                        Integer newRandomRank = coordinates.getRank() + (int) (Math.random() * 3) - 1;
+                        if (map.isSquareEmpty(new Coordinates(newRandomFile, newRandomRank))) {
+                            map.replaceEntity(this, coordinates, new Coordinates(newRandomFile, newRandomRank));
+                        }
+                    }
                     break outerLoop;
                 } else if (newCoordinates != null && !visited.contains(newCoordinates)) {
                     visited.add(newCoordinates);

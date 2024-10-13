@@ -15,9 +15,9 @@ public class Predator extends Creature {
     public static final String icon = ANSI_RED + 'P' + ANSI_RESET;
     public static final int maxHp = 5;
 
-    private int speed = 5;
+    private final int speed = 5;
     private int hp;
-    private int power = 3;
+    private final int power = 5;
 
     public Predator(Coordinates coordinates) {
         super(coordinates);
@@ -76,11 +76,19 @@ public class Predator extends Creature {
                     queue.add(newCoordinates);
                     visited.add(newCoordinates);
                 } else if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareHerbivore(newCoordinates)) {
-                    Herbivore her = (Herbivore) map.getEntity(newCoordinates);
-                    if (power >= her.getHp()) {
-                        map.replaceEntity(this, coordinates, newCoordinates);
+                    if (Math.abs(newCoordinates.getFileInteger() - coordinates.getFileInteger()) <= speed && Math.abs(newCoordinates.getRank() - coordinates.getRank()) <= speed) {
+                        Herbivore her = (Herbivore) map.getEntity(newCoordinates);
+                        if (power >= her.getHp()) {
+                            map.replaceEntity(this, coordinates, newCoordinates);
+                        } else {
+                            her.setHp(her.getHp() - power);
+                        }
                     } else {
-                        her.setHp(her.getHp() - power);
+                        File newRandomFile = file[coordinates.getFileInteger() + (int) (Math.random() * 3) - 1];
+                        Integer newRandomRank = coordinates.getRank() + (int) (Math.random() * 3) - 1;
+                        if (map.isSquareEmpty(new Coordinates(newRandomFile, newRandomRank))) {
+                            map.replaceEntity(this, coordinates, new Coordinates(newRandomFile, newRandomRank));
+                        }
                     }
                     break outerLoop;
                 } else if (newCoordinates != null && !visited.contains(newCoordinates)) {
