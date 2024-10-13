@@ -9,10 +9,32 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Herbivore extends Creature {
-    public static final Character icon = 'H';
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+
+    public static final String icon = ANSI_YELLOW + 'H' + ANSI_RESET;
+    public static final int maxHp = 5;
+
+    private int speed = 5;
+    private int hp;
 
     public Herbivore(Coordinates coordinates) {
         super(coordinates);
+        this.hp = maxHp;
+    }
+
+    @Override
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    @Override
+    public int getHp() {
+        return this.hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     @Override
@@ -48,6 +70,7 @@ public class Herbivore extends Creature {
                     queue.add(newCoordinates);
                     visited.add(newCoordinates);
                 } else if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareGrass(newCoordinates)) {
+                    this.setHp(getHp() + 1);
                     map.replaceEntity(this, coordinates, newCoordinates);
                     break outerLoop;
                 } else if (newCoordinates != null && !visited.contains(newCoordinates)) {

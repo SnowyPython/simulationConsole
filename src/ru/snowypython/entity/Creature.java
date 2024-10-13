@@ -11,5 +11,8 @@ public abstract class Creature extends Entity {
         super(coordinates);
     }
 
+    public abstract int getSpeed();
+    public abstract int getHp();
+
     public abstract void makeMove(Map map, Coordinates coordinates);
 }

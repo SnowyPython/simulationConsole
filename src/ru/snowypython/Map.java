@@ -12,6 +12,10 @@ public class Map {
         map.put(coordinates, entity);
     }
 
+    public Entity getEntity(Coordinates coordinates) {
+        return map.get(coordinates);
+    }
+
     public void replaceEntity(Entity entity, Coordinates oldCoordinates, Coordinates newCoordinates) {
         entity.coordinates = newCoordinates;
         map.remove(oldCoordinates, entity);
