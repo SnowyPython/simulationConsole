@@ -3,7 +3,10 @@ package ru.snowypython.entity;
 import ru.snowypython.Coordinates;
 
 public class Rock extends Entity {
-    public static final Character icon = 'R';
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+
+    public static final String icon = ANSI_BLACK + 'R' + ANSI_RESET;
 
     public Rock(Coordinates coordinates) {
         super(coordinates);

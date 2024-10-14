@@ -17,6 +17,7 @@ public class Herbivore extends Creature {
 
     private final int speed = 3;
     private int hp;
+    private boolean death = false;
 
     public Herbivore(Coordinates coordinates) {
         super(coordinates);
@@ -33,12 +34,26 @@ public class Herbivore extends Creature {
         return this.hp;
     }
 
+    @Override
+    public boolean isDeath() {
+        return death;
+    }
+
+    @Override
+    public void setDeath() {
+        this.death = true;
+    }
+
     public void setHp(int hp) {
         this.hp = hp;
     }
 
     @Override
     public void makeMove(Map map, Coordinates coordinates) {
+        if (this.isDeath()) {
+            return;
+        }
+
         final int MAX_RANG = 20;
 
         int[] dFile = new int[]{-1, -1, -1, 0, 1, 1, 1, 0};

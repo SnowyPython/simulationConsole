@@ -17,7 +17,8 @@ public class Predator extends Creature {
 
     private final int speed = 5;
     private int hp;
-    private final int power = 5;
+    private final int power = 3;
+    private boolean death = false;
 
     public Predator(Coordinates coordinates) {
         super(coordinates);
@@ -34,6 +35,16 @@ public class Predator extends Creature {
         return this.hp;
     }
 
+    @Override
+    public boolean isDeath() {
+        return death;
+    }
+
+    @Override
+    public void setDeath() {
+        this.death = true;
+    }
+
     public int getPower() {
         return this.power;
     }
@@ -45,6 +56,10 @@ public class Predator extends Creature {
 
     @Override
     public void makeMove(Map map, Coordinates coordinates) {
+        if (this.isDeath()) {
+            return;
+        }
+
         final int MAX_RANG = 20;
 
         int[] dFile = new int[]{-1, -1, -1, 0, 1, 1, 1, 0};
@@ -80,6 +95,7 @@ public class Predator extends Creature {
                         Herbivore her = (Herbivore) map.getEntity(newCoordinates);
                         if (power >= her.getHp()) {
                             map.replaceEntity(this, coordinates, newCoordinates);
+                            her.setDeath();
                         } else {
                             her.setHp(her.getHp() - power);
                         }
