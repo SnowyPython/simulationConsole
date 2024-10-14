@@ -14,13 +14,11 @@ public class Simulation {
         Set<Herbivore> herbivores = Actions.createHerbivoreSet(Actions.countHerbivores);
         Set<Predator> predators = Actions.createPredatorSet(Actions.countPredators);
 
-        for (Herbivore herbivore : herbivores) {
-            map.setEntity(herbivore, herbivore.coordinates);
-        }
+        Actions.setStartMap(map, herbivores, predators);
 
-        for (Predator predator : predators) {
-            map.setEntity(predator, predator.coordinates);
-        }
+        MapConsoleRenderer.render(map);
+
+        //Actions.makeMove(map);
 
         MapConsoleRenderer.render(map);
     }

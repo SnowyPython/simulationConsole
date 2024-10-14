@@ -1,12 +1,12 @@
 package ru.snowypython;
 
-import ru.snowypython.entity.Herbivore;
-import ru.snowypython.entity.Predator;
+import ru.snowypython.entity.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Actions {
     public static int countPredators;
@@ -24,6 +24,42 @@ public class Actions {
             System.out.println("Некоректные данные");
         }
     }
+
+    public static void setStartMap(Map map, Set<Herbivore> herbivores, Set<Predator> predators) {
+        for (Herbivore herbivore : herbivores) {
+            map.setEntity(herbivore, herbivore.coordinates);
+        }
+
+        for (Predator predator : predators) {
+            map.setEntity(predator, predator.coordinates);
+        }
+
+        for (int grass = 0; grass < 5; grass++) {
+            Coordinates randomCoordinates = createRandomCoordinates();
+            map.setEntity(new Grass(randomCoordinates), randomCoordinates);
+        }
+
+        for (int grass = 0; grass < 3; grass++) {
+            Coordinates randomCoordinates = createRandomCoordinates();
+            map.setEntity(new Tree(randomCoordinates), randomCoordinates);
+        }
+
+        for (int grass = 0; grass < 3; grass++) {
+            Coordinates randomCoordinates = createRandomCoordinates();
+            map.setEntity(new Rock(randomCoordinates), randomCoordinates);
+        }
+    }
+
+//    public static void makeMove(Map map) {
+//        for (java.util.Map.Entry<Coordinates, Entity> entry : map.map.entrySet()) {
+//            Entity entity = entry.getValue();
+//            Creature creature = null;
+//            if (entity instanceof Creature) {
+//                creature = (Creature) entity;
+//                creature.makeMove(map, creature.coordinates);
+//            }
+//        }
+//    }
 
     public static HashSet<Herbivore> createHerbivoreSet(int countHerbivores) {
         HashSet<Herbivore> set = new HashSet<>();
