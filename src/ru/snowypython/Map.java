@@ -3,9 +3,10 @@ package ru.snowypython;
 import ru.snowypython.entity.*;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Map {
-    HashMap<Coordinates, Entity> map = new HashMap<>();
+    private HashMap<Coordinates, Entity> map = new HashMap<>();
 
     public void setEntity(Entity entity, Coordinates coordinates) {
         entity.coordinates = coordinates;
@@ -14,6 +15,10 @@ public class Map {
 
     public Entity getEntity(Coordinates coordinates) {
         return map.get(coordinates);
+    }
+
+    public Set<Coordinates> getCoordinates() {
+        return map.keySet();
     }
 
     public void replaceEntity(Entity entity, Coordinates oldCoordinates, Coordinates newCoordinates) {

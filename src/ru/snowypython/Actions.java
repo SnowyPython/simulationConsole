@@ -39,27 +39,31 @@ public class Actions {
             map.setEntity(new Grass(randomCoordinates), randomCoordinates);
         }
 
-        for (int grass = 0; grass < 3; grass++) {
+        for (int tree = 0; tree < 3; tree++) {
             Coordinates randomCoordinates = createRandomCoordinates();
             map.setEntity(new Tree(randomCoordinates), randomCoordinates);
         }
 
-        for (int grass = 0; grass < 3; grass++) {
+        for (int rock = 0; rock < 3; rock++) {
             Coordinates randomCoordinates = createRandomCoordinates();
             map.setEntity(new Rock(randomCoordinates), randomCoordinates);
         }
     }
 
-//    public static void makeMove(Map map) {
-//        for (java.util.Map.Entry<Coordinates, Entity> entry : map.map.entrySet()) {
-//            Entity entity = entry.getValue();
-//            Creature creature = null;
-//            if (entity instanceof Creature) {
-//                creature = (Creature) entity;
-//                creature.makeMove(map, creature.coordinates);
-//            }
-//        }
-//    }
+    public static void makeMove(Map map) {
+        Set<Creature> creaturesToMove = new HashSet<>();
+
+        for (Coordinates key : map.getCoordinates()) {
+            Entity entity = map.getEntity(key);
+            if (entity instanceof Creature creature) {
+                creaturesToMove.add(creature);
+            }
+        }
+
+        for (Creature creature : creaturesToMove) {
+            creature.makeMove(map, creature.coordinates);
+        }
+    }
 
     public static HashSet<Herbivore> createHerbivoreSet(int countHerbivores) {
         HashSet<Herbivore> set = new HashSet<>();

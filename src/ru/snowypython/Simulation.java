@@ -2,7 +2,6 @@ package ru.snowypython;
 
 import ru.snowypython.entity.*;
 
-import java.util.HashMap;
 import java.util.Set;
 
 public class Simulation {
@@ -18,7 +17,8 @@ public class Simulation {
 
         MapConsoleRenderer.render(map);
 
-        //Actions.makeMove(map);
+        Actions.makeMove(map);
+        Actions.makeMove(map);
 
         MapConsoleRenderer.render(map);
     }

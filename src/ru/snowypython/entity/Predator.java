@@ -53,64 +53,89 @@ public class Predator extends Creature {
         this.hp = hp;
     }
 
-
     @Override
     public void makeMove(Map map, Coordinates coordinates) {
         if (this.isDeath()) {
             return;
         }
 
-        final int MAX_RANG = 20;
+            Coordinates targetHerbivore = findNearestHerbivore(map, coordinates);
 
-        int[] dFile = new int[]{-1, -1, -1, 0, 1, 1, 1, 0};
-        int[] dRank = new int[]{-1, 0, 1, 1, 1, 0, -1, -1};
-        File[] file = File.values();
+        if (targetHerbivore != null) {
+            if (canMoveTo(coordinates, targetHerbivore)) {
+                Herbivore her = (Herbivore) map.getEntity(targetHerbivore);
+                if (this.power >= her.getHp()) {
+                    map.replaceEntity(this, coordinates, targetHerbivore);
+                    her.setDeath();
+                } else {
+                    her.setHp(her.getHp() - this.power);
+                    moveTowardsTarget(map, coordinates, targetHerbivore);
+                }
+            } else {
+                moveTowardsTarget(map, coordinates, targetHerbivore);
+            }
+        }
+    }
 
+    private Coordinates findNearestHerbivore(Map map, Coordinates start) {
         SimpleQueue<Coordinates> queue = new SimpleQueue<>();
         Set<Coordinates> visited = new HashSet<>();
 
-        queue.add(coordinates);
-        visited.add(coordinates);
+        queue.add(start);
+        visited.add(start);
 
-        outerLoop:
+        int[] dFile = {-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] dRank = {-1, 0, 1, 1, 1, 0, -1, -1};
+
         while (!queue.isEmpty()) {
-            Coordinates center = queue.remove();
-            Integer centerFileInteger = center.getFileInteger();
-            Integer centerRank = center.getRank();
+            Coordinates current = queue.remove();
+
+            if (map.isSquareHerbivore(current)) {
+                return current;
+            }
 
             for (int i = 0; i < 8; i++) {
-                int newFile = centerFileInteger + dFile[i];
-                int newRank = centerRank + dRank[i];
+                int newFile = current.getFileInteger() + dFile[i];
+                int newRank = current.getRank() + dRank[i];
 
-                Coordinates newCoordinates = null;
-                if (newFile >= 0 && newRank >= 1 && newFile < file.length && newRank <= MAX_RANG) {
-                    newCoordinates = new Coordinates(file[newFile], newRank);
-                }
-
-                if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareEmpty(newCoordinates)) {
+                if (isValidCoordinate(newFile, newRank) && !visited.contains(new Coordinates(File.values()[newFile], newRank))) {
+                    Coordinates newCoordinates = new Coordinates(File.values()[newFile], newRank);
+                    visited.add(newCoordinates);
                     queue.add(newCoordinates);
-                    visited.add(newCoordinates);
-                } else if (newCoordinates != null && !visited.contains(newCoordinates) && map.isSquareHerbivore(newCoordinates)) {
-                    if (Math.abs(newCoordinates.getFileInteger() - coordinates.getFileInteger()) <= speed && Math.abs(newCoordinates.getRank() - coordinates.getRank()) <= speed) {
-                        Herbivore her = (Herbivore) map.getEntity(newCoordinates);
-                        if (power >= her.getHp()) {
-                            map.replaceEntity(this, coordinates, newCoordinates);
-                            her.setDeath();
-                        } else {
-                            her.setHp(her.getHp() - power);
-                        }
-                    } else {
-                        File newRandomFile = file[coordinates.getFileInteger() + (int) (Math.random() * 3) - 1];
-                        Integer newRandomRank = coordinates.getRank() + (int) (Math.random() * 3) - 1;
-                        if (map.isSquareEmpty(new Coordinates(newRandomFile, newRandomRank))) {
-                            map.replaceEntity(this, coordinates, new Coordinates(newRandomFile, newRandomRank));
-                        }
-                    }
-                    break outerLoop;
-                } else if (newCoordinates != null && !visited.contains(newCoordinates)) {
-                    visited.add(newCoordinates);
                 }
             }
+        }
+        return null;
+    }
+
+    private boolean isValidCoordinate(int file, int rank) {
+        return file >= 0 && file < File.values().length && rank >= 1 && rank <= 20;
+    }
+
+    private boolean canMoveTo(Coordinates current, Coordinates target) {
+        return Math.abs(target.getFileInteger() - current.getFileInteger()) <= getSpeed() &&
+                Math.abs(target.getRank() - current.getRank()) <= getSpeed();
+    }
+
+    private void moveTowardsTarget(Map map, Coordinates current, Coordinates target) {
+        int fileDiff = target.getFileInteger() - current.getFileInteger();
+        int rankDiff = target.getRank() - current.getRank();
+
+        int newFile = current.getFileInteger();
+        int newRank = current.getRank();
+
+        if (Math.abs(fileDiff) >= Math.abs(rankDiff)) {
+            newFile = current.getFileInteger() + Integer.signum(fileDiff);
+        }
+
+        if (Math.abs(rankDiff) > Math.abs(fileDiff) || Math.abs(fileDiff) == Math.abs(rankDiff)) {
+            newRank = current.getRank() + Integer.signum(rankDiff);
+        }
+
+        Coordinates newCoordinates = new Coordinates(File.values()[newFile], newRank);
+
+        if (map.isSquareEmpty(newCoordinates)) {
+            map.replaceEntity(this, current, newCoordinates);
         }
     }
 }
