@@ -8,18 +8,18 @@ public class Simulation {
     public static void main(String[] args) {
         Map map = new Map();
 
-        Actions.prepareSimulation();
+        PrepareSimulation.prepareSimulation();
 
-        Set<Herbivore> herbivores = Actions.createHerbivoreSet(Actions.countHerbivores);
-        Set<Predator> predators = Actions.createPredatorSet(Actions.countPredators);
+        Set<Herbivore> herbivores = CreateSets.createHerbivoreSet(PrepareSimulation.countHerbivores);
+        Set<Predator> predators = CreateSets.createPredatorSet(PrepareSimulation.countPredators);
 
-        Actions.setStartMap(map, herbivores, predators);
-
-        MapConsoleRenderer.render(map);
-
-        Actions.makeMove(map);
-        Actions.makeMove(map);
+        SetStartMap.setStartMap(map, herbivores, predators);
 
         MapConsoleRenderer.render(map);
+
+        for (int i = 0; i < 10; i++) {
+            MakeMove.makeMove(map);
+            MapConsoleRenderer.render(map);
+        }
     }
 }
