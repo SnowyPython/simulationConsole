@@ -3,6 +3,7 @@ package ru.snowypython.entity;
 import ru.snowypython.Coordinates;
 import ru.snowypython.File;
 import ru.snowypython.Map;
+import ru.snowypython.PrepareSimulation;
 import ru.snowypython.queue.SimpleQueue;
 
 import java.util.HashSet;
@@ -19,6 +20,8 @@ public class Predator extends Creature {
     private int hp;
     private final int power = 3;
     private boolean death = false;
+
+    private int countHerbivores = PrepareSimulation.countHerbivores;
 
     public Predator(Coordinates coordinates) {
         super(coordinates);
@@ -67,6 +70,13 @@ public class Predator extends Creature {
                 if (this.power >= her.getHp()) {
                     map.replaceEntity(this, coordinates, targetHerbivore);
                     her.setDeath();
+                    if (noHerbivores(--countHerbivores)) {
+                        Coordinates randomCoordinates = createRandomCoordinates();
+                        map.setEntity(new Herbivore(randomCoordinates), randomCoordinates);
+                        randomCoordinates = createRandomCoordinates();
+                        map.setEntity(new Herbivore(randomCoordinates), randomCoordinates);
+                        countHerbivores += 2;
+                    }
                 } else {
                     her.setHp(her.getHp() - this.power);
                     moveTowardsTarget(map, coordinates, targetHerbivore);
@@ -137,5 +147,18 @@ public class Predator extends Creature {
         if (map.isSquareEmpty(newCoordinates)) {
             map.replaceEntity(this, current, newCoordinates);
         }
+    }
+
+    private boolean noHerbivores(int countHerbivores) {
+        return countHerbivores <= 0;
+    }
+
+    private static Coordinates createRandomCoordinates() {
+        File[] file = File.values();
+
+        File randomFile = file[(int) (Math.random() * file.length)];
+        Integer randomRank = (int) (Math.random() * 20) + 1;
+
+        return new Coordinates(randomFile, randomRank);
     }
 }

@@ -60,6 +60,8 @@ public class Herbivore extends Creature {
             if (canMoveTo(coordinates, targetGrass)) {
                 map.replaceEntity(this, coordinates, targetGrass);
                 this.setHp(getHp() + 1);
+                Coordinates randomCoordinates = createRandomCoordinates();
+                map.setEntity(new Grass(randomCoordinates), randomCoordinates);
             } else {
                 moveTowardsTarget(map, coordinates, targetGrass);
             }
@@ -126,5 +128,14 @@ public class Herbivore extends Creature {
         if (map.isSquareEmpty(newCoordinates)) {
             map.replaceEntity(this, current, newCoordinates);
         }
+    }
+
+    private static Coordinates createRandomCoordinates() {
+        File[] file = File.values();
+
+        File randomFile = file[(int) (Math.random() * file.length)];
+        Integer randomRank = (int) (Math.random() * 20) + 1;
+
+        return new Coordinates(randomFile, randomRank);
     }
 }

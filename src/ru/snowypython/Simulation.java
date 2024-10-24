@@ -17,7 +17,7 @@ public class Simulation {
 
         MapConsoleRenderer.render(map);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 12; i++) {
             MakeMove.makeMove(map);
             MapConsoleRenderer.render(map);
         }
